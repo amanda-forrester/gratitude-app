@@ -65,11 +65,11 @@ const deleteUser = (req, res) => {
     })
 }
 
-//not working. Tring to create a gratitude item given a user id, but maybe need to just provide the user id.
+//creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {
     const id_users = parseInt(req.params.id_users)
     const {gratitude_item} = req.body;
-    pool.query('INSERT INTO gratitude_items (id_users, gratitude_item) VALUES (id_users, $1) RETURNING *', [gratitude_item], (error, results) => {
+    pool.query('INSERT INTO gratitude_items (id_users, date, gratitude_item) VALUES ($1, current_date, $2) RETURNING *', [id_users, gratitude_item], (error, results) => {
         if (error) {
             throw error
         }
@@ -88,6 +88,32 @@ const getGratitudeByUserId = (req, res) => {
     })
 }
 
+const deleteGratitude = (req, res) => {
+    const id = parseInt(req.params.id); 
+    pool.query('DELETE FROM gratitude_items WHERE id=$1', [id], (error, results) => {
+        if (error) {
+            throw error
+        }
+        res.status(200).send(`Gratitude item deleted with ID: ${id}.`)
+    })
+}
+
+
+const updateGratitude = (req, res) => {
+    const id = parseInt(req.params.id);
+    const {gratitude_item} = req.body;
+    pool.query(
+        'UPDATE gratitude_items SET gratitude_item = $1 WHERE id = $2',
+        [gratitude_item, id],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            res.status(200).send(`Gratitude item updated with ID: ${id}.`)
+        }
+    )
+}
+
 
 module.exports = {
     getUsers,
@@ -96,5 +122,7 @@ module.exports = {
     updateUser,
     deleteUser,
     createGratitude,
-    getGratitudeByUserId
+    getGratitudeByUserId,
+    deleteGratitude,
+    updateGratitude
 };

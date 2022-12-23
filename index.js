@@ -30,6 +30,10 @@ app.post('/gratitude/:id_users', db.createGratitude);
 
 app.get('/gratitude/:id_users', db.getGratitudeByUserId);
 
+app.delete('/gratitude/:id', db.deleteGratitude);
+
+app.put('/gratitude/:id', db.updateGratitude);
+
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);
 })
