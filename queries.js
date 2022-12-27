@@ -32,7 +32,9 @@ const getUserById = (req, res) => {
 
 const createUser = (req, res) => {
     const {first_name, last_name, username, password, email} = req.body;
-    pool.query('INSERT INTO users (first_name, last_name, username, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING *', [first_name, last_name, username, password, email], (error, results) => {
+    pool.query('INSERT INTO users (first_name, last_name, username, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING *', 
+    [first_name, last_name, username, password, email], 
+    (error, results) => {
         if (error) {
             throw error
         }
@@ -69,7 +71,9 @@ const deleteUser = (req, res) => {
 const createGratitude = (req, res) => {
     const id_users = parseInt(req.params.id_users)
     const {gratitude_item} = req.body;
-    pool.query('INSERT INTO gratitude_items (id_users, date, gratitude_item) VALUES ($1, current_date, $2) RETURNING *', [id_users, gratitude_item], (error, results) => {
+    pool.query('INSERT INTO gratitude_items (id_users, date, gratitude_item) VALUES ($1, NOW(), $2) RETURNING *', 
+    [id_users, gratitude_item], 
+    (error, results) => {
         if (error) {
             throw error
         }
@@ -114,6 +118,25 @@ const updateGratitude = (req, res) => {
     )
 }
 
+//add in a column for date updated?
+
+//not sure about this one. Need to find a way to query by the date..will need to then format to how the date looks in the database
+const getGratitudeByUserIdAndDate = (req, res) => {
+    const id_users = parseInt(req.params.id_users);
+    const date = req.params.date;
+    pool.query('SELECT gratitude_item FROM gratitude_items WHERE id_users=$1 AND date=$2 ', [id_users, date], (error, results) => {
+        if (error) {
+            throw error
+        }
+        res.status(200).json(results.rows);
+    })
+}
+
+//create two new files, users and gratitude and import them here to make it look cleaner.
+//set up user sessions
+//add authentication/authorization and sanitation
+//add unit tests
+
 
 module.exports = {
     getUsers,
@@ -124,5 +147,6 @@ module.exports = {
     createGratitude,
     getGratitudeByUserId,
     deleteGratitude,
-    updateGratitude
+    updateGratitude,
+    getGratitudeByUserIdAndDate
 };
