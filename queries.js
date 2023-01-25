@@ -67,6 +67,8 @@ const deleteUser = (req, res) => {
     })
 }
 
+
+
 //creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {
     const id_users = parseInt(req.params.id_users)
