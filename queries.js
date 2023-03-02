@@ -30,16 +30,33 @@ const getUserById = (req, res) => {
     })
 }
 
-const createUser = (req, res) => {
-    const {first_name, last_name, username, password, email} = req.body;
-    pool.query('INSERT INTO users (first_name, last_name, username, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING *', 
-    [first_name, last_name, username, password, email], 
-    (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(201).send(`User added with ID: ${results.rows[0].id}`)
-    })
+async function getUserByGoogleId(googleId) {
+    try {
+        const results = await pool.query('SELECT first_name FROM users WHERE google_id = $1', [googleId]);
+        return results.rows[0]['first_name'];
+    }
+    catch (err) {
+        console.log(`Query error: ${JSON.stringify(err)}`);
+    }
+}
+
+
+async function createUser(user) {
+    const {first_name, last_name, username, password, email, google_id} = user;
+    try {
+        const result = await pool.query('INSERT INTO users (first_name, last_name, username, password, email, google_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
+        [first_name, last_name, username, password, email, google_id]);
+        return {
+            success: true,
+            error: null
+        };
+    }
+    catch(error){
+        return {
+            success: false,
+            error: error
+        };
+    }
 };
 
 const updateUser = (req, res) => {
@@ -150,5 +167,6 @@ module.exports = {
     getGratitudeByUserId,
     deleteGratitude,
     updateGratitude,
-    getGratitudeByUserIdAndDate
+    getGratitudeByUserIdAndDate,
+    getUserByGoogleId,
 };

@@ -7,6 +7,7 @@ const port = 3005;
 
 const app = express();
 const db = require('./queries');
+const { query } = require('express');
 
 
 app.use(bodyParser.json());
@@ -21,7 +22,8 @@ function isLoggedIn(req, res, next) {
 }
 
 app.use(session({
-    secret: '673493kj',
+    secret: process.env.SECRET,
+    cookie: { maxAge: 172800000},
     resave: false,
     saveUninitialized: true
 }));
@@ -49,8 +51,41 @@ app.get('/auth/failure', (req, res) => {
 })
 
 app.get('/gratitude', isLoggedIn, (req, res) => {
-    res.send(`Hello, ${req.user.displayName}. Welcome to your gratitude page.`);
-})
+    if (req.user.sub) {
+        try {
+            const results = db.getUserByGoogleId(req.user.sub).then(firstName => {
+                if (firstName && firstName != '') {
+                    res.send(`<img src= ${req.user.picture} /><br>Hello, ${req.user.displayName}. Welcome to your gratitude page. Here's the query result: ${firstName}`);
+                }
+                else {
+                    const user = {
+                        first_name: req.user.given_name,
+                        last_name: req.user.family_name,
+                        username: null,
+                        password: null,
+                        email: req.user.email,
+                        google_id: req.user.sub
+                    };
+                    const dbResponse = db.createUser(user).then(result => {
+                        res.send(`User successfully created! ${JSON.stringify(result)}`);
+                    })
+                    .catch(reason => {
+                        res.send(`Failed to create new user. ${JSON.stringify(reason)}`);
+                    });
+                }
+            })
+            .catch(reason => {
+                res.send(`Caught error from the DB: ${JSON.stringify(reason)}`);
+            });
+        }
+        catch (err) {
+            res.send(`Caught error from the DB: ${JSON.stringify(err)}`);
+        }
+    }
+    else {
+        res.send('User does not exist');
+    }
+});
 
 app.get('/logout', (req, res) => {
     req.logout(function(err) {
