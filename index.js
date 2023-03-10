@@ -4,18 +4,28 @@ const session = require('express-session');
 require('./auth');
 const passport = require('passport');
 const port = 3005;
+const cors = require('cors');
 
 const app = express();
 const db = require('./queries');
 const { query } = require('express');
 
+app.use(cors());
 
 app.use(bodyParser.json());
+
 app.use(
     bodyParser.urlencoded({
         extended: true,
     })
 )
+
+app.use((_req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+  
+    next();
+  });
 
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
@@ -31,7 +41,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
     res.send('<a href = "/auth/google">Login with Google</a>');
 });
 
@@ -90,7 +100,7 @@ app.get('/gratitude', isLoggedIn, (req, res) => {
 app.get('/logout', (req, res) => {
     req.logout(function(err) {
         if (err) { return next(err); }
-    res.redirect('/');
+    res.redirect('/login');
     req.session.destroy();
 })
 });

@@ -36,7 +36,7 @@ async function getUserByGoogleId(googleId) {
         return results.rows[0]['first_name'];
     }
     catch (err) {
-        console.log(`Query error: ${JSON.stringify(err)}`);
+        console.log(`Query error!!: ${JSON.stringify(err)}`);
     }
 }
 
