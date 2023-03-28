@@ -1,18 +1,19 @@
 import './App.css';
-import Users from './Gratitude.js';
+import LoginPage from './Routes/LoginPage';
+import SuccessPage from './Routes/SuccessPage';
+import { BrowserRouter, Routes , Route } from 'react-router-dom';
 
 function App() {
   return (
-  
     <div className="App">
-      <header className="App-header">
-        <Users />
-        <label for="gratitude">What are you grateful for?</label>
-        <br></br>
-        <textarea id="gratitude" name="gratitude" rows="4" cols="50"></textarea>
-        <br></br>
-        <button>Submit</button>
-      </header>
+        <header className="App-header">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={ <LoginPage /> } />
+              <Route path="/success" element={ <SuccessPage />} />
+            </Routes>
+          </BrowserRouter>
+        </header>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default class Users extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:3005/users').then(response => {
+        axios.get('/users').then(response => {
             this.setState({ users: response.data });
         })
     };
@@ -19,7 +19,7 @@ export default class Users extends React.Component {
                 <h1>Users</h1>
                 <ul>
                     {this.state.users.map(user => (
-                        <li key={user.id}>{user.first_name}</li>
+                        <li key={user.id}>{user.first_name} {user.last_name} {user.email}</li>
                     ))}
                 </ul>
             </div>
