@@ -115,6 +115,8 @@ app.put('/users/:id', db.updateUser);
 
 app.delete('/users/:id', db.deleteUser);
 
+app.post('/gratitude/assign', db.createGratitudeByGoogleId);
+
 app.post('/gratitude/:id_users', db.createGratitude);
 
 app.get('/gratitude/:id_users', db.getGratitudeByUserId);

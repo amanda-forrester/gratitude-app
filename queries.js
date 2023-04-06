@@ -84,7 +84,19 @@ const deleteUser = (req, res) => {
     })
 }
 
-
+const createGratitudeByGoogleId = (req, res) => {
+    const google_id = req.user.sub;
+    //const id_users = parseInt(req.params.id_users);
+    const {gratitude_item} = req.body;
+    pool.query('INSERT INTO gratitude_items (date, gratitude_item, google_id) VALUES (NOW(), $2, $3) RETURNING *', 
+    [gratitude_item, google_id], 
+    (error, results) => {
+        if (error) {
+            throw error
+        }
+        res.status(201).send(`Gratitude added with ID: ${results.rows[0].id}`)
+    })
+}
 
 //creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {
@@ -169,4 +181,5 @@ module.exports = {
     updateGratitude,
     getGratitudeByUserIdAndDate,
     getUserByGoogleId,
+    createGratitudeByGoogleId
 };
