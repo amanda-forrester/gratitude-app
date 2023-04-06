@@ -1,4 +1,5 @@
 import React from 'react';
+import "./App.css"
 
 function LoginButton() {
     function handleLogin() {
@@ -6,7 +7,7 @@ function LoginButton() {
       }
 
   return (
-    <button onClick={handleLogin}>Login with Google</button>
+    <button onClick={handleLogin} className = "google-button">Login with Google</button>
   );
 }
 
