@@ -12,13 +12,16 @@
   "dependencies": {
     "config": "^3.3.8",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
     "node-oauth2-server": "^2.4.0",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",
     "pg": "^8.8.0",
-    "session": "^0.1.0"
+    "session": "^0.1.0",
+    "uuid": "^9.0.0"
   }
 }

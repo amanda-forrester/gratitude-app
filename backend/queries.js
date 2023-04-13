@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const { v4: uuidv4 } = require('uuid');
 
 const Pool = require('pg').Pool;
 const pool = new Pool({
@@ -84,19 +85,24 @@ const deleteUser = (req, res) => {
     })
 }
 
-const createGratitudeByGoogleId = (req, res) => {
-    const google_id = req.user.sub;
-    //const id_users = parseInt(req.params.id_users);
-    const {gratitude_item} = req.body;
-    pool.query('INSERT INTO gratitude_items (date, gratitude_item, google_id) VALUES (NOW(), $2, $3) RETURNING *', 
-    [gratitude_item, google_id], 
-    (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(201).send(`Gratitude added with ID: ${results.rows[0].id}`)
-    })
-}
+const createGratitudeByGoogleId = async (googleId, name, gratitudeItem) => {
+    const client = await pool.connect();
+    const id = uuidv4(); // generate a UUID
+    try {
+        const result = await client.query(
+        `INSERT INTO gratitude_items (id, google_id, date, name, gratitude_item)
+            VALUES ($1, $2, NOW(), $3, $4)
+            RETURNING id, google_id, date, name, gratitude_item`,
+        [id, googleId, name, gratitudeItem]
+        );
+        console.log('New gratitude item created:', result.rows[0]);
+        return result.rows[0];
+    } catch (err) {
+        console.error('Error inserting gratitude item', err);
+    } finally {
+        client.release();
+    }
+    };
 
 //creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {
@@ -183,3 +189,8 @@ module.exports = {
     getUserByGoogleId,
     createGratitudeByGoogleId
 };
+
+
+const crypto = require('crypto');
+secret = crypto.randomBytes(64).toString('hex');
+console.log(secret)

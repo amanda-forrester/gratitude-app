@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import validator from 'validator';
 import '../App.css';
+import axios from 'axios';
+
 
 function SuccessPage() {
+  
   const [gratitudeItem, setGratitudeItem] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3005/gratitude');
+        setUser(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+
+  /*useEffect(() => {
+    alert('Login successful!');
+  }, []);*/
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const sanitizedGratitudeItem = validator.stripLow(validator.escape(gratitudeItem));
+    //stripLow removes characters with ASCII value < 32 i.e. tabs, line breaks etc
+    //escape escapes any HTML entities that may be in the input
     if (sanitizedGratitudeItem.length < 1 || sanitizedGratitudeItem.length > 1000) {
       alert('Please enter a gratitude item between 1 and 1000 characters long.');
       return;
@@ -17,7 +40,11 @@ function SuccessPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ gratitude_item: sanitizedGratitudeItem }),
+      body: JSON.stringify({
+        google_id: user.id,
+        name: user.firstName,
+        gratitude_item: sanitizedGratitudeItem
+       }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -30,12 +57,12 @@ function SuccessPage() {
 
   const handleGratitudeItemChange = (event) => {
     setGratitudeItem(event.target.value);
-  };
+  }; 
+
 
   return (
     <div>
-      <h1>Login successful!</h1>
-      <p>Welcome to your gratitude page!</p>
+      <h1>Welcome to your gratitude page!</h1>
       <br></br>
       <br></br>
       <form onSubmit={handleSubmit} name="gratitudeItems">
