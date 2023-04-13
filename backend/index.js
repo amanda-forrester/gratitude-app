@@ -63,7 +63,7 @@ app.get('/auth/google/callback', async (req, res) => {
         code: authorizationCode,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_url:'http://localhost:3005/auth/google/callback' , //no clue on this one
+        redirect_url:'/auth/google/callback' , //no clue on this one
         grant_type: 'authorization_code'
         });
         const accessToken = response.data.access_token;

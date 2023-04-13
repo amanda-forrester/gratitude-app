@@ -189,8 +189,3 @@ module.exports = {
     getUserByGoogleId,
     createGratitudeByGoogleId
 };
-
-
-const crypto = require('crypto');
-secret = crypto.randomBytes(64).toString('hex');
-console.log(secret)
