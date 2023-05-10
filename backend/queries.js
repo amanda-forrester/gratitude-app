@@ -1,3 +1,5 @@
+const uuid4 = require('uuid4');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -85,18 +87,38 @@ const deleteUser = (req, res) => {
 }
 
 const createGratitudeByGoogleId = (req, res) => {
-    const google_id = req.user.sub;
+    console.log(`inside createGratitudeByGoogleId. req is: ${JSON.stringify(req)}`);
+    const google_id = req.user_id;
     //const id_users = parseInt(req.params.id_users);
-    const {gratitude_item} = req.body;
-    pool.query('INSERT INTO gratitude_items (date, gratitude_item, google_id) VALUES (NOW(), $2, $3) RETURNING *', 
-    [gratitude_item, google_id], 
-    (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(201).send(`Gratitude added with ID: ${results.rows[0].id}`)
-    })
-}
+    const gratitude_item = req.gratitude_item;
+    const gratitude_id = uuid4();
+    //let dbResults;
+    console.log(`(in createGratitudeByGoogleID) about to run the query. id=${gratitude_id}, google_id=${google_id}`);
+    //try {
+        pool.query('INSERT INTO gratitude_items (id, date, gratitude_item, google_id) VALUES ($1, NOW(), $2, $3) RETURNING *', 
+        [gratitude_id, gratitude_item, google_id], 
+        (error, results) => {
+            if (error) {
+                console.log(`DB Error: ${JSON.stringify(error.stack)}`);
+                return console.error('Error executing query', error.stack);
+            }
+            //console.log(`SUCCESS! results: ${JSON.stringify(results)}`);
+            res.status(201).send({ success: true }); //results.rows[0]);
+
+            //dbResults = results;
+        });
+    /*
+    }
+    catch (error) {
+        console.log(`Caught DB error: ${JSON.stringify(error)}`);
+        res.status(500).send(`{ 'success': false }`);
+    }
+    */
+
+    //console.log(`(in createGratitudeByGoogleID) about to return`);
+
+
+};
 
 //creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {

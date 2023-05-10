@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import validator from 'validator';
 import '../App.css';
+import { useSearchParams } from "react-router-dom"
 
 function SuccessPage() {
+  const [searchParams, /*setSearchParams*/] = useSearchParams();
   const [gratitudeItem, setGratitudeItem] = useState('');
+  const userSub = searchParams.get("sub");
+  const userAccessToken = searchParams.get("token");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,8 +20,9 @@ function SuccessPage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer: ${userAccessToken}`
       },
-      body: JSON.stringify({ gratitude_item: sanitizedGratitudeItem }),
+      body: JSON.stringify({ gratitude_string: sanitizedGratitudeItem }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -36,6 +41,8 @@ function SuccessPage() {
     <div>
       <h1>Login successful!</h1>
       <p>Welcome to your gratitude page!</p>
+      <p>User sub is {userSub}</p>
+      <p>User access token is {userAccessToken}</p>
       <br></br>
       <br></br>
       <form onSubmit={handleSubmit} name="gratitudeItems">
