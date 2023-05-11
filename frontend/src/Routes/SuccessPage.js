@@ -6,7 +6,8 @@ import { useSearchParams } from "react-router-dom"
 function SuccessPage() {
   const [searchParams, /*setSearchParams*/] = useSearchParams();
   const [gratitudeItem, setGratitudeItem] = useState('');
-  const userSub = searchParams.get("sub");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  //const userSub = searchParams.get("sub");
   const userAccessToken = searchParams.get("token");
 
   const handleSubmit = (event) => {
@@ -27,6 +28,7 @@ function SuccessPage() {
       .then((response) => response.json())
       .then((data) => {
         console.log('Success:', data);
+        setIsSubmitted(true);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -37,12 +39,49 @@ function SuccessPage() {
     setGratitudeItem(event.target.value);
   };
 
+  const handleReset = () => {
+    setGratitudeItem('');
+  };
+
+  const combinedFunction = () => {
+    setIsSubmitted(false);
+    handleReset();
+  }
+
   return (
     <div>
       <h1>Login successful!</h1>
       <p>Welcome to your gratitude page!</p>
-      <p>User sub is {userSub}</p>
-      <p>User access token is {userAccessToken}</p>
+      <br></br>
+      <br></br>
+      {isSubmitted ? (
+        <div>
+          <p>Gratitude item successfully submitted!</p>
+          <button onClick={() => combinedFunction()}>Submit Another</button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} name="gratitudeItems">
+          What are you grateful for? <br></br>
+          <textarea
+            className="input-element"
+            type="text"
+            name="gratitude"
+            value={gratitudeItem}
+            onChange={handleGratitudeItemChange}
+          ></textarea>
+          <br></br>
+          <input type="submit" className="submit-button" value="Submit"></input>
+        </form>
+      )}
+    </div>
+  );
+  
+
+  /*return (
+    //old code:
+    <div>
+      <h1>Login successful!</h1>
+      <p>Welcome to your gratitude page!</p>
       <br></br>
       <br></br>
       <form onSubmit={handleSubmit} name="gratitudeItems">
@@ -58,7 +97,7 @@ function SuccessPage() {
         <input type="submit" className="submit-button" value="Submit"></input>
       </form>
     </div>
-  );
+  );*/
 }
 
 export default SuccessPage;
