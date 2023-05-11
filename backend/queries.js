@@ -44,10 +44,10 @@ async function getUserByGoogleId(googleId) {
 
 
 async function createUser(user) {
-    const {first_name, last_name, username, password, email, google_id} = user;
+    const {first_name, last_name, email, google_id} = user;
     try {
-        const result = await pool.query('INSERT INTO users (first_name, last_name, username, password, email, google_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
-        [first_name, last_name, username, password, email, google_id]);
+        const result = await pool.query('INSERT INTO users (first_name, last_name, email, google_id) VALUES ($1, $2, $3, $4) RETURNING *', 
+        [first_name, last_name, email, google_id]);
         return {
             success: true,
             error: null
@@ -107,13 +107,6 @@ const createGratitudeByGoogleId = (req, res) => {
 
             //dbResults = results;
         });
-    /*
-    }
-    catch (error) {
-        console.log(`Caught DB error: ${JSON.stringify(error)}`);
-        res.status(500).send(`{ 'success': false }`);
-    }
-    */
 
     //console.log(`(in createGratitudeByGoogleID) about to return`);
 
@@ -186,8 +179,8 @@ const getGratitudeByUserIdAndDate = (req, res) => {
 }
 
 //create two new files, users and gratitude and import them here to make it look cleaner.
-//set up user sessions
-//add authentication/authorization and sanitation
+//set up user sessions -- 
+//add authentication/authorization and sanitation --
 //add unit tests
 
 
