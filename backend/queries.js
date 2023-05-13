@@ -32,7 +32,8 @@ const getUserById = (req, res) => {
     })
 }
 
-async function getUserByGoogleId(googleId) {
+//old function
+/*async function getUserByGoogleId(googleId) {
     try {
         const results = await pool.query('SELECT first_name FROM users WHERE google_id = $1', [googleId]);
         return results.rows[0]['first_name'];
@@ -40,10 +41,25 @@ async function getUserByGoogleId(googleId) {
     catch (err) {
         console.log(`Query error!!: ${JSON.stringify(err)}`);
     }
-}
+}*/
+
+async function getUserByGoogleId(googleId) {
+    console.log("Fetching user with Google ID: ", googleId);
+    try {
+      const results = await pool.query(
+        'SELECT * FROM users WHERE google_id = $1',
+        [googleId]
+      );
+      return results.rows[0];
+    } catch (err) {
+      console.log(`Query error!!: ${JSON.stringify(err)}`);
+    }
+  }
+  
 
 
 async function createUser(user) {
+    console.log("Creating new user: ", user);
     const {first_name, last_name, email, google_id} = user;
     try {
         const result = await pool.query('INSERT INTO users (first_name, last_name, email, google_id) VALUES ($1, $2, $3, $4) RETURNING *', 

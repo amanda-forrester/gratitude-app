@@ -6,13 +6,12 @@ const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const port = 3005;
 const cors = require('cors');
 const dotenv = require ('dotenv');
-dotenv.config();
-const axios = require('axios');
-const qs = require('qs');
+dotenv.config()
 const {OAuth2Client} = require('google-auth-library');
 const app = express();
 const db = require('./queries');
 const { query } = require('express');
+const jwt = require('jsonwebtoken');
 
 const client = new OAuth2Client({
     clientId: process.env.GOOGLE_CLIENT_ID,
@@ -22,33 +21,8 @@ const client = new OAuth2Client({
 
 let userProfile;
 let userAccessToken;
-let userIdToken;
-let idToken;
-
-
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3005/auth/google/callback", // Use 3000 instead? (was 3005), but I think that'll require updating the settings in Google
-    scope: ['openid', 'profile'],
-    passReqToCallback: true
-  },
-  
-  function(request, accessToken, refreshToken, profile, done) {
-      console.log(`[[[[[CALLED WITH:\n\n  accessToken=${JSON.stringify(accessToken)}\n  refreshToken=${JSON.stringify(refreshToken)}\n  profile=${JSON.stringify(profile)}\n\n]]]]]\n\n`);
-
-      userProfile = profile;
-      userAccessToken = accessToken;
-      //userIdToken = profile.id_token; broken
-      console.log(`userProfile: ${JSON.stringify(userProfile)}\n\n`);
-      console.log(`userAccessToken: ${JSON.stringify(userAccessToken)}\n\n`);
-      //console.log(`!!!!!!!userIdToken: ${JSON.stringify(userIdToken)}\n\n`);
-
-      return done(null, profile);
-  }
-)); 
-
-  
+//let userIdToken;
+//let idToken;
 
 passport.serializeUser(function(user, done) {
     done(null, user);
@@ -75,10 +49,7 @@ app.use((_req, res, next) => {
     next();
   });
 
-function isLoggedIn(req, res, next) {
-    req.user ? next() : res.sendStatus(401);
-}
-
+  
 app.use(session({
     secret: process.env.SECRET,
     cookie: { maxAge: 172800000},
@@ -88,6 +59,89 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
+/*The "invalid_grant" error usually means you tried to use the same authorization code to get more than one developer token.  The authorization code is the string returned after you click Accept from the URL provided by the offline credentials example, and you can only use an authorization code once.*/
+
+//There is a problem with this function below. When I add it as middlewear to the /auth/google/callback GET method
+// it breaks everything. It then won't get in the try block of that function at all, though it does get the value 
+//for "code". If I don't add it as middlewear, maybe it's not even using it? I'm not really sure. Surely it would
+//have to, as it appears to be succesfully logging people in via google...
+
+//OK I think the problem is that I'm having google generate an authorization code during the google strategy, and then again
+//during the get(/auth/google/callback). You can only have it generate a code once. 
+
+//Need to get the idToken from the passport.use to the app.get callback. Not sure how. Also, now the name, email etc are
+//missing from the profile object. It only contains the token info now...
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3005/auth/google/callback", // Use 3000 instead? (was 3005), but I think that'll require updating the settings in Google
+    scope: ['openid', 'profile', 'email'],
+    passReqToCallback: true
+  },
+  
+  function(request, accessToken, refreshToken, profile, params, done) {
+      console.log(`[[[[[CALLED WITH:\n\n  accessToken=${JSON.stringify(accessToken)}\n  refreshToken=${JSON.stringify(refreshToken)}\n  profile=${JSON.stringify(profile)}\n\n]]]]]\n\n`);
+      //adding these two lines to see if I can get it from the profile once I'm actually using the middlewear
+      const idToken = profile.id_token;
+      request.idToken = idToken;
+      console.log("ID TOKEN IS: ", idToken);
+      userProfile = profile;
+      userAccessToken = accessToken;
+      const decodedToken = jwt.decode(profile.id_token);
+      console.log('DECODED TOKEN: ', decodedToken);
+
+      
+      // Check if the user already exists in the database
+      db.getUserByGoogleId(decodedToken.sub)
+        .then((user) => {
+          if (user) {
+            // User exists in the database
+            return done(null, user);
+          } else {
+            // User does not exist, create a new user in the database
+            const newUser = {
+              first_name: decodedToken.given_name,
+              last_name: decodedToken.family_name,
+              email: decodedToken.email,
+              google_id: decodedToken.sub,
+            };
+
+            db.createUser(newUser)
+            .then((result) => {
+                if (result.success) {
+                return done(null, newUser);
+                } else {
+                console.error('Error creating new user:', result.error);
+                return done(result.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error creating new user:', error);
+                return done(error);
+            });
+
+          }
+        })
+        .catch((error) => {
+          console.error('Error checking user:', error);
+          return done(error);
+        });
+    }
+  )
+)
+
+      /*return done(null, profile);
+  }
+));*/
+
+  
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+}
 
 app.get('/login', (req, res) => {
     res.send('<a href = "/auth/google">Login with Google</a>');
@@ -101,6 +155,7 @@ app.get('/auth/google',
 // Verify function to validate the id_token
 async function verify(idToken) {
     try {
+        console.log("Verifying ID token ", idToken);
       const ticket = await client.verifyIdToken({
         idToken: idToken,
         audience: process.env.GOOGLE_CLIENT_ID,
@@ -115,14 +170,17 @@ async function verify(idToken) {
   }
   
 //callback function. This gets the id_token you need to authenticate user
-app.get('/auth/google/callback', async (req, res) => {
+app.get('/auth/google/callback', passport.authenticate('google', {}), async (req, res) => {
     const code = req.query.code;
-  
+    console.log("CODE IS: ", code);
     try {
-      const { tokens } = await client.getToken(code);
+      const idToken = req.idToken; // Access the id_token from the req.user object
+      console.log("ID TOKEN IS: ", idToken);
+      const userId = await verify(idToken);
+      /*const { tokens } = await client.getToken(code);
       const idToken = tokens.id_token;
-      
-      const userId = await verify(idToken)
+      console.log("ID TOKEN IS: ", idToken);
+      const userId = await verify(idToken)*/
     
       res.redirect(`http://localhost:3000/success?token=${idToken}`); // Redirect to a success page, passing in idToken to front end
     } catch (error) {
@@ -138,16 +196,6 @@ app.get('/success', (req, res) => res.send(userProfile));
 app.get('/auth/failure', (req, res) => {
     res.send('Something went wrong');
 });
-
-//already have these functions above. I guess they are duplicates.
-/*passport.serializeUser(function(user, done) {
-    done(null, user);
-});
-
-
-passport.deserializeUser(function(user, done) {
-    done(null, user);
-});*/
 
 
 
