@@ -184,9 +184,11 @@ const updateGratitude = (req, res) => {
 
 //not sure about this one. Need to find a way to query by the date..will need to then format to how the date looks in the database
 const getGratitudeByUserIdAndDate = (req, res) => {
-    const id_users = parseInt(req.params.id_users);
+    console.log("You are in the getGratitude endpoint!");
+    const userId = req.params.google_id;
     const date = req.params.date;
-    pool.query('SELECT gratitude_item FROM gratitude_items WHERE id_users=$1 AND date=$2 ', [id_users, date], (error, results) => {
+    console.log("userId, date: ", userId, date);
+    pool.query('SELECT gratitude_item FROM gratitude_items WHERE google_id=$1 AND date=$2 ', [userId, date], (error, results) => {
         if (error) {
             throw error
         }

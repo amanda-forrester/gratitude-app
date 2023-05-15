@@ -198,45 +198,6 @@ app.get('/auth/failure', (req, res) => {
 });
 
 
-
-//old checkUser function. It is not working..
-/*const checkUser = (req, res) => {
-    //isLoggedIn();
-    if (req.user.sub) {
-        try {
-            const results = db.getUserByGoogleId(req.user.sub).then(firstName => {
-                if (firstName && firstName != '') {
-                    res.send('User already exists. Welcome back!');
-                }
-                else {
-                    const user = {
-                        first_name: req.user.given_name,
-                        last_name: req.user.family_name,
-                        email: req.user.email,
-                        google_id: req.user.sub
-                    };
-                    const dbResponse = db.createUser(user).then(result => {
-                        res.send(`User successfully created! ${JSON.stringify(result)}`);
-                    })
-                    .catch(reason => {
-                        res.send(`Failed to create new user. ${JSON.stringify(reason)}`);
-                    });
-                }
-            })
-            .catch(reason => {
-                res.send(`Caught error from the DB: ${JSON.stringify(reason)}`);
-            });
-        }
-        catch (err) {
-            res.send(`Caught error from the DB: ${JSON.stringify(err)}`);
-        }
-    }
-    else {
-        res.send('User does not exist');
-    }
-};*/
-
-
 app.post('/gratitude/assign', (req, res) => {
     const authorizationStr = req.headers.authorization;
     console.log(`authorization: ${authorizationStr}`);
@@ -289,7 +250,7 @@ app.delete('/gratitude/:id', db.deleteGratitude);
 
 app.put('/gratitude/:id', db.updateGratitude);
 
-app.get('/gratitude/:id_users/:date', db.getGratitudeByUserIdAndDate);
+app.get('/gratitude/:google_id/:date', db.getGratitudeByUserIdAndDate);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);
