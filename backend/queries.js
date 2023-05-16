@@ -1,5 +1,5 @@
 const uuid4 = require('uuid4');
-
+const moment = require('moment');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -186,7 +186,7 @@ const updateGratitude = (req, res) => {
 const getGratitudeByUserIdAndDate = (req, res) => {
     console.log("You are in the getGratitude endpoint!");
     const userId = req.params.google_id;
-    const date = req.params.date;
+    const date = moment(req.params.date).format('YYYY-MM-DD');
     console.log("userId, date: ", userId, date);
     pool.query('SELECT gratitude_item FROM gratitude_items WHERE google_id=$1 AND date=$2 ', [userId, date], (error, results) => {
         if (error) {
