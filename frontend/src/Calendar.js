@@ -2,42 +2,44 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
+import './GratitudeCalendar.css';
 
 function GratitudeCalendar({ googleId, onDateChange }) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [gratitudeItems, setGratitudeItems] = useState([]);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  useEffect(() => {
-    if (selectedDate !== null) {
-      const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`/gratitude/${googleId}/${formattedDate}`);
-          const data = await response.json();
-          setGratitudeItems(data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      fetchData();
-    }
-  }, [googleId, selectedDate]);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [gratitudeItems, setGratitudeItems] = useState([]);
+  
+    const handleDateChange = (date) => {
+      setSelectedDate(date);
+    };
+  
+    useEffect(() => {
+      if (selectedDate !== null) {
+        const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`/gratitude/${googleId}/${formattedDate}`);
+            const data = await response.json();
+            setGratitudeItems(data);
+          } catch (error) {
+            console.error(error);
+          }
+        };
+  
+        fetchData();
+      }
+    }, [googleId, selectedDate]);
 
   return (
-    <div>
+    <div className="calendar-container"> {/* Add a container for positioning */}
       <h2>Calendar</h2>
-      <Calendar value={selectedDate} onChange={handleDateChange} />
+      <div className="calendar-wrapper"> {/* Wrap the Calendar component */}
+        <Calendar value={selectedDate} onChange={handleDateChange} />
+      </div>
       {selectedDate && (
         <>
-          <p>Selected date: {moment(selectedDate).format('YYYY-MM-DD')}</p>
           {gratitudeItems.length > 0 ? (
             <div>
-              <h3>Gratitude Items for {moment(selectedDate).format('YYYY-MM-DD')}</h3>
+              <h3>On {moment(selectedDate).format('MMMM d, YYYY')} you were grateful for:</h3>
               <ul>
                 {gratitudeItems.map((item, index) => (
                   <li key={index}>{item.gratitude_item}</li>
@@ -50,8 +52,8 @@ function GratitudeCalendar({ googleId, onDateChange }) {
         </>
       )}
     </div>
-  );
-}
+  )
+};
 
 export default GratitudeCalendar;
 

@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode';
 import GratitudeCalendar from '../Calendar';
 import moment from 'moment';
 import validator from 'validator';
+import '../SuccessPage.css';
 
 function SuccessPage() {
   const [searchParams] = useSearchParams();
@@ -78,13 +79,17 @@ function SuccessPage() {
       <p>Add additional details here...</p>
       <br />
       <br />
-      <GratitudeCalendar
-        googleId={googleId}
-        selectedDate={selectedDate}
-        onDateChange={handleDateChange}
-        gratitudeItems={gratitudeItems}
-        setGratitudeItems={setGratitudeItems}
-      />
+      <div className="SuccessPage">
+        <div className="calendar-container">
+          <GratitudeCalendar
+          googleId={googleId}
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+          gratitudeItems={gratitudeItems}
+          setGratitudeItems={setGratitudeItems}
+        />
+        </div>
+      <div className="form-container">
       {isSubmitted ? (
         <div>
           <p>Gratitude item successfully submitted!</p>
@@ -107,6 +112,8 @@ function SuccessPage() {
           <input type="submit" className="submit-button" value="Submit" />
         </form>
       )}
+      </div>
+      </div>
     </div>
   );
 }
