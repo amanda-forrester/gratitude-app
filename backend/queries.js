@@ -182,7 +182,7 @@ const updateGratitude = (req, res) => {
 
 //add in a column for date updated?
 
-//not sure about this one. Need to find a way to query by the date..will need to then format to how the date looks in the database
+
 const getGratitudeByUserIdAndDate = (req, res) => {
     console.log("You are in the getGratitude endpoint!");
     const userId = req.params.google_id;
@@ -192,7 +192,13 @@ const getGratitudeByUserIdAndDate = (req, res) => {
         if (error) {
             throw error
         }
-        res.status(200).json(results.rows);
+
+        const response = {
+            total: results.rows.length,
+            items: results.rows
+          };
+      
+        res.status(200).json(response);
     })
 }
 
