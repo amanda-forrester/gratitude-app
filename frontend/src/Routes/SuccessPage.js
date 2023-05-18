@@ -6,6 +6,7 @@ import GratitudeCalendar from '../Calendar';
 import moment from 'moment';
 import validator from 'validator';
 import '../SuccessPage.css';
+import { useCookies } from 'react-cookie';
 
 function SuccessPage() {
   const [searchParams] = useSearchParams();
@@ -17,6 +18,11 @@ function SuccessPage() {
   const googleId = decodedToken.sub;
   const firstName = decodedToken.given_name;
   const [gratitudeItems, setGratitudeItems] = useState([]);
+  const [cookies, setCookie] = useCookies(['session']);
+
+  useEffect(() => {
+    setCookie('session', userAccessToken, { path: '/' });
+  }, [userAccessToken, setCookie]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -33,7 +39,8 @@ function SuccessPage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer: ${userAccessToken}`,
+        Authorization: `Bearer ${userAccessToken}`,
+        Cookie: cookies.session,
       },
       body: JSON.stringify({ gratitude_string: sanitizedGratitudeItem }),
     })
@@ -46,7 +53,6 @@ function SuccessPage() {
         console.error('Error:', error);
       });
   };
-  
 
   const handleGratitudeItemChange = (event) => {
     setGratitudeItem(event.target.value);
@@ -59,19 +65,24 @@ function SuccessPage() {
 
   useEffect(() => {
     const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
-    
+
     const fetchData = async () => {
       try {
-        const response = await fetch(`/gratitude/${googleId}/${formattedDate}`);
+        const response = await fetch(`/gratitude/${googleId}/${formattedDate}`, {
+          headers: {
+            Authorization: `Bearer ${userAccessToken}`,
+            Cookie: cookies.session,
+          },
+        });
         const data = await response.json();
         setGratitudeItems(data);
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     fetchData();
-  }, [googleId, selectedDate]);
+  }, [googleId, selectedDate, userAccessToken, cookies.session]);
 
   return (
     <div>
@@ -82,41 +93,42 @@ function SuccessPage() {
       <div className="SuccessPage">
         <div className="calendar-container">
           <GratitudeCalendar
-          googleId={googleId}
-          selectedDate={selectedDate}
-          onDateChange={handleDateChange}
-          gratitudeItems={gratitudeItems}
-          setGratitudeItems={setGratitudeItems}
-        />
+            googleId={googleId}
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+            gratitudeItems={gratitudeItems}
+            setGratitudeItems={setGratitudeItems}
+          />
         </div>
-      <div className="form-container">
-      {isSubmitted ? (
-        <div>
-          <p>Gratitude item successfully submitted!</p>
-          <button onClick={combinedFunction}>Submit Another</button>
+        <div className="form-container">
+          {isSubmitted ? (
+            <div>
+              <p>Gratitude item successfully submitted!</p>
+              <button onClick={combinedFunction}>Submit Another</button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} name="gratitudeItems">
+              <div>
+                What are you grateful for?
+                <br />
+                <textarea
+                  className="input-element"
+                  type="text"
+                  name="gratitude"
+                  value={gratitudeItem}
+                  onChange={handleGratitudeItemChange}
+                />
+              </div>
+              <br />
+              <input type="submit" className="submit-button" value="Submit" />
+            </form>
+          )}
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} name="gratitudeItems">
-          <div>
-            What are you grateful for?
-            <br />
-            <textarea
-              className="input-element"
-              type="text"
-              name="gratitude"
-              value={gratitudeItem}
-              onChange={handleGratitudeItemChange}
-            />
-          </div>
-          <br />
-          <input type="submit" className="submit-button" value="Submit" />
-        </form>
-      )}
-      </div>
       </div>
     </div>
   );
-}
+          }
+
 
 export default SuccessPage;
 

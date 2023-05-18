@@ -105,7 +105,6 @@ const deleteUser = (req, res) => {
 const createGratitudeByGoogleId = (req, res) => {
     console.log(`inside createGratitudeByGoogleId. req is: ${JSON.stringify(req)}`);
     const google_id = req.user_id;
-    //const id_users = parseInt(req.params.id_users);
     const gratitude_item = req.gratitude_item;
     const gratitude_id = uuid4();
     //let dbResults;
@@ -131,8 +130,9 @@ const createGratitudeByGoogleId = (req, res) => {
 
 //creates a gratitude item given a user ID. Will auto populate with the user id given in the url.
 const createGratitude = (req, res) => {
-    const id_users = parseInt(req.params.id_users)
-    const {gratitude_item} = req.body;
+    const id_users = parseInt(req.params.id_users);
+    //changed below line. was just req.body
+    const {gratitude_item} = req.body.gratitude_string;
     pool.query('INSERT INTO gratitude_items (id_users, date, gratitude_item) VALUES ($1, NOW(), $2) RETURNING *', 
     [id_users, gratitude_item], 
     (error, results) => {

@@ -201,7 +201,7 @@ app.get('/auth/failure', (req, res) => {
 app.post('/gratitude/assign', (req, res) => {
     const authorizationStr = req.headers.authorization;
     console.log(`authorization: ${authorizationStr}`);
-    const token = authorizationStr.replace("Bearer: ", "");
+    const token = authorizationStr.replace("Bearer ", "");
     console.log(`token: ${token}`);
     
     verify(token).then((userSub) => {
