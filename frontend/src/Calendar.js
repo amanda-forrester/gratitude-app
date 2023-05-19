@@ -46,11 +46,11 @@ function GratitudeCalendar({ googleId, onDateChange }) {
   const displayedGratitudeItems = gratitudeItems.slice(startIndex - 1, endIndex);
 
   return (
-    <div className="calendar-container">
-      <h2>Calendar</h2>
-      <div className="calendar-wrapper">
+    <div className="calendar-wrapper">
+      <div className="calendar-only">
         <Calendar value={selectedDate} onChange={handleDateChange} />
       </div>
+      <div className = "gratitude-list">
       {selectedDate && (
         <>
           {displayedGratitudeItems.length > 0 ? (
@@ -75,6 +75,7 @@ function GratitudeCalendar({ googleId, onDateChange }) {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }

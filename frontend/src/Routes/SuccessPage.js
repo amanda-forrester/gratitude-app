@@ -87,19 +87,9 @@ function SuccessPage() {
   return (
     <div>
       <h1>Welcome, {firstName}, to your gratitude page!</h1>
-      <p>Add additional details here...</p>
       <br />
       <br />
       <div className="SuccessPage">
-        <div className="calendar-container">
-          <GratitudeCalendar
-            googleId={googleId}
-            selectedDate={selectedDate}
-            onDateChange={handleDateChange}
-            gratitudeItems={gratitudeItems}
-            setGratitudeItems={setGratitudeItems}
-          />
-        </div>
         <div className="form-container">
           {isSubmitted ? (
             <div>
@@ -124,11 +114,19 @@ function SuccessPage() {
             </form>
           )}
         </div>
+        <div className="calendar-container">
+          <GratitudeCalendar
+            googleId={googleId}
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+            gratitudeItems={gratitudeItems}
+            setGratitudeItems={setGratitudeItems}
+          />
+        </div>
       </div>
     </div>
   );
-          }
-
+}
 
 export default SuccessPage;
 
