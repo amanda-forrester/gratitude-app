@@ -52,7 +52,7 @@ app.use((_req, res, next) => {
   
 app.use(session({
     secret: process.env.SECRET,
-    cookie: { maxAge: 172800000},
+    cookie: { maxAge: 172800000 },
     resave: false,
     saveUninitialized: true
 }));
@@ -60,20 +60,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
-/*The "invalid_grant" error usually means you tried to use the same authorization code to get more than one developer token.  The authorization code is the string returned after you click Accept from the URL provided by the offline credentials example, and you can only use an authorization code once.*/
-
-//There is a problem with this function below. When I add it as middlewear to the /auth/google/callback GET method
-// it breaks everything. It then won't get in the try block of that function at all, though it does get the value 
-//for "code". If I don't add it as middlewear, maybe it's not even using it? I'm not really sure. Surely it would
-//have to, as it appears to be succesfully logging people in via google...
-
-//OK I think the problem is that I'm having google generate an authorization code during the google strategy, and then again
-//during the get(/auth/google/callback). You can only have it generate a code once. 
-
-//Need to get the idToken from the passport.use to the app.get callback. Not sure how. Also, now the name, email etc are
-//missing from the profile object. It only contains the token info now...
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -133,10 +119,6 @@ passport.use(new GoogleStrategy({
     }
   )
 )
-
-      /*return done(null, profile);
-  }
-));*/
 
   
 function isLoggedIn(req, res, next) {
@@ -233,6 +215,8 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
 })
 });
+
+app.get('/quotes', db.getRandomQuote);
 
 app.get('/users', db.getUsers);
 

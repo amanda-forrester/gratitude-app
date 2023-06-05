@@ -18,39 +18,10 @@ width: 100%;
 order: 2;
 margin: 50px;
 text-align: left;
+white-space: normal !important;
 
 }
   
-  
-  
-
-
-/*.calendar-container {
-    width: 60%;
-  }
-  
-  .calendar-wrapper {
-    margin-bottom: 20px;
-  }
-  
-  .pagination {
-    margin-top: 20px;
-  }
-
-
-.gratitude-list {
-    background-color: yellow;
-}*/
-  
-
-
-/*.calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top:0px; 
-}*/
-    
     
   
 

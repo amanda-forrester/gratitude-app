@@ -77,6 +77,20 @@ async function createUser(user) {
     }
 };
 
+const getRandomQuote = async (req, res) => {
+    try {
+      let random = Math.floor(Math.random() * 4);
+      const result = await pool.query(
+        `SELECT quote, author FROM quotes WHERE id = ${random}`
+      );
+      return res.json(result.rows);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
 const updateUser = (req, res) => {
     const id = parseInt(req.params.id);
     const {first_name, last_name, username, password, email} = req.body;
@@ -202,10 +216,6 @@ const getGratitudeByUserIdAndDate = (req, res) => {
     })
 }
 
-//create two new files, users and gratitude and import them here to make it look cleaner.
-//set up user sessions -- 
-//add authentication/authorization and sanitation --
-//add unit tests
 
 
 module.exports = {
@@ -220,5 +230,6 @@ module.exports = {
     updateGratitude,
     getGratitudeByUserIdAndDate,
     getUserByGoogleId,
-    createGratitudeByGoogleId
+    createGratitudeByGoogleId,
+    getRandomQuote
 };
