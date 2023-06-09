@@ -8,6 +8,7 @@ import moment from 'moment';
 import validator from 'validator';
 import '../SuccessPage.css';
 import { useCookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
 
 function SuccessPage() {
   const [searchParams] = useSearchParams();
@@ -22,9 +23,15 @@ function SuccessPage() {
   const [cookies, setCookie] = useCookies(['session']);
 
   useEffect(() => {
-    setCookie('session', userAccessToken, { path: '/' });
+    setCookie('session', userAccessToken, { path: '/', maxAge: 172800000 } );
   }, [userAccessToken, setCookie]);
 
+  //const cookies = new Cookies();
+  //cookies.set('session', {key: value}, {path: '/', expires: new Date(Date.now()+2592000)});
+  //cookies.set('session', true, {
+    //path: '/',
+   // maxAge: 172800000,
+//});
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };

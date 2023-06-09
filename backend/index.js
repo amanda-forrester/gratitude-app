@@ -49,7 +49,7 @@ app.use((_req, res, next) => {
     next();
   });
 
-  
+//debugger; 
 app.use(session({
     secret: process.env.SECRET,
     cookie: { maxAge: 172800000 },
@@ -133,7 +133,7 @@ app.get('/auth/google',
     passport.authenticate('google', { scope: ['email', 'profile']})
 );
 
-
+//debugger;
 // Verify function to validate the id_token
 async function verify(idToken) {
     try {
@@ -181,11 +181,14 @@ app.get('/auth/failure', (req, res) => {
 
 
 app.post('/gratitude/assign', (req, res) => {
+  debugger;
     const authorizationStr = req.headers.authorization;
     console.log(`authorization: ${authorizationStr}`);
     const token = authorizationStr.replace("Bearer ", "");
     console.log(`token: ${token}`);
-    
+   // console.log(`refresh: ${refreshToken}`);
+   
+
     verify(token).then((userSub) => {
         // make a DB call using userSub. userSub is a string that contains the sub value from Google. Save it as a field in DB records.
         // This object needs to match what the createGratitudeByGoogleId function is expecting.
