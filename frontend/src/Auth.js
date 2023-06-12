@@ -1,9 +1,10 @@
 import React from 'react';
 import "./App.css"
+const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 function LoginButton() {
     function handleLogin() {
-        window.location.href = 'http://localhost:3005/auth/google';
+        window.location.href = `${backendUrl}/auth/google`; //was http://localhost:3005/auth/google
       }
 
   return (
