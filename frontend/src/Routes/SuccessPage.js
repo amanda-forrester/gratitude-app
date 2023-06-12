@@ -9,6 +9,7 @@ import validator from 'validator';
 import '../SuccessPage.css';
 import { useCookies } from 'react-cookie';
 import Cookies from 'universal-cookie';
+import LogoutButton from '../LogoutButton';
 
 function SuccessPage() {
   const [searchParams] = useSearchParams();
@@ -20,10 +21,10 @@ function SuccessPage() {
   const googleId = decodedToken.sub;
   const firstName = decodedToken.given_name;
   const [gratitudeItems, setGratitudeItems] = useState([]);
-  const [cookies, setCookie] = useCookies(['session']);
+  const [cookies, setCookie, removeCookie] = useCookies(['session']);
 
   useEffect(() => {
-    setCookie('session', userAccessToken, { path: '/', maxAge: 172800000 } );
+    setCookie('session', userAccessToken, { path: '/', maxAge: 30 } );
   }, [userAccessToken, setCookie]);
 
   //const cookies = new Cookies();
@@ -94,6 +95,7 @@ function SuccessPage() {
 
   return (
     <div>
+      {<LogoutButton/>}
       <h1>Welcome, {firstName}, to your gratitude page!</h1>
       < GetQuote /> 
       <br />
