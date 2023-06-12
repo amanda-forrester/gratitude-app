@@ -13,11 +13,13 @@ const app = express();
 const db = require('./queries');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+const frontendUrl = "https://gratitude-app.onrender.com";
+const backendUrl = "https://gratitude-app-backend.onrender.com"
 
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: 'http://localhost:3005/auth/google/callback',
+  redirectUri: `${backendUrl}/auth/google/callback`, //used to be http://localhost:3005/auth/google/callback
 });
 
 let userProfile;
@@ -124,7 +126,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3005/auth/google/callback',
+      callbackURL: `${backendUrl}/auth/google/callback`, //used to be http://localhost:3005/auth/google/callback
       scope: ['openid', 'profile', 'email'],
       passReqToCallback: true,
     },
@@ -221,7 +223,7 @@ app.get('/auth/google/callback', passport.authenticate('google', {}), async (req
     console.log('ID TOKEN IS: ', idToken);
     const userId = await verify(idToken);
 
-    res.redirect(`http://localhost:3000/success?token=${idToken}`);
+    res.redirect(`${frontendUrl}/success?token=${idToken}`); // was http://localhost:3000/success?token=${idToken}
   } catch (error) {
     console.error('Error retrieving id_token:', error);
     console.log('Error response:', error.response.data);
@@ -263,7 +265,7 @@ app.post('/gratitude/assign', refreshTokenIfNeeded, (req, res) => {
 app.get('/logout', (req, res) => {
   req.logout(); // Perform the logout operation
   req.session.destroy(); // Clear the session data
-  res.redirect('http://localhost:3000'); // Redirect to the desired URL
+  res.redirect(`${frontendUrl}`); // Redirect to the desired URL was http://localhost:3000
 });
 
 

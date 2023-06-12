@@ -10,6 +10,7 @@ import '../SuccessPage.css';
 import { useCookies } from 'react-cookie';
 import Cookies from 'universal-cookie';
 import LogoutButton from '../LogoutButton';
+const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 function SuccessPage() {
   const [searchParams] = useSearchParams();
@@ -44,7 +45,7 @@ function SuccessPage() {
       alert('Please enter a gratitude item between 1 and 1000 characters long.');
       return;
     }
-    fetch('http://localhost:3005/gratitude/assign', {
+    fetch(`${backendUrl}/gratitude/assign`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ function SuccessPage() {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`/gratitude/${googleId}/${formattedDate}`, {
+        const response = await fetch(`${backendUrl}/gratitude/${googleId}/${formattedDate}`, {
           headers: {
             Authorization: `Bearer ${userAccessToken}`,
             Cookie: cookies.session,
