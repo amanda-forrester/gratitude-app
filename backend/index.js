@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
-const port = 3005;
+//const port = 3005;
+const PORT = process.env.PORT || 3005;
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -286,8 +287,8 @@ app.put('/gratitude/:id', refreshTokenIfNeeded, db.updateGratitude);
 
 app.get('/gratitude/:google_id/:date', refreshTokenIfNeeded, db.getGratitudeByUserIdAndDate);
 
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}.`);
 });
 
 
