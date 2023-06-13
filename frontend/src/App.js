@@ -10,7 +10,7 @@ function App() {
         <header className="App-header">
           <BrowserRouter>
             <Routes>
-              <Route path='https://gratitude-app.onrender.com' element={ <LoginPage /> } />
+              <Route path='/' element={ <LoginPage /> } />
               <Route path='https://gratitude-app.onrender.com/success' element={ <SuccessPage />} />
             </Routes>
           </BrowserRouter>
