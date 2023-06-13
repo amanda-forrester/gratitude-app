@@ -231,7 +231,7 @@ app.get('/auth/google/callback', passport.authenticate('google', {}), async (req
   }
 });
 
-app.get('/success', (req, res) => res.send(userProfile));
+//app.get('/success', (req, res) => res.send(userProfile));
 
 app.get('/auth/failure', (req, res) => {
   res.send('Something went wrong');
