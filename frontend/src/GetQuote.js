@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 const GetQuote = () => {
   const [quote, setQuote] = useState('');
@@ -10,7 +11,7 @@ const GetQuote = () => {
 
   const fetchRandomQuote = async () => {
     try {
-      const response = await fetch('http://localhost:3005/quotes');
+      const response = await fetch(`${backendUrl}/quotes`);
       const data = await response.json();
       const randomIndex = Math.floor(Math.random() * data.length);
       const randomQuote = data[randomIndex];
