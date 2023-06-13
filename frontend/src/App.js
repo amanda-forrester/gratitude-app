@@ -2,7 +2,6 @@ import './App.css';
 import LoginPage from './Routes/LoginPage';
 import SuccessPage from './Routes/SuccessPage';
 import { BrowserRouter, Routes , Route } from 'react-router-dom';
-const frontendUrl = "https://gratitude-app.onrender.com";
 
 function App() {
   return (
@@ -10,8 +9,8 @@ function App() {
         <header className="App-header">
           <BrowserRouter>
             <Routes>
-              <Route path='/' element={ <LoginPage /> } />
-              <Route path='https://gratitude-app.onrender.com/success' element={ <SuccessPage />} />
+              <Route path="/" element={ <LoginPage /> } />
+              <Route path="/success" element={ <SuccessPage />} />
             </Routes>
           </BrowserRouter>
         </header>
