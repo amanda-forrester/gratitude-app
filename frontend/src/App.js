@@ -2,7 +2,7 @@ import './App.css';
 import LoginPage from './Routes/LoginPage';
 import SuccessPage from './Routes/SuccessPage';
 import { BrowserRouter, Routes , Route } from 'react-router-dom';
-const frontendUrl = https://gratitude-app.onrender.com;
+const frontendUrl = "https://gratitude-app.onrender.com";
 
 function App() {
   return (
