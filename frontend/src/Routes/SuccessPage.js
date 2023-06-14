@@ -95,10 +95,11 @@ function SuccessPage() {
   }, [googleId, selectedDate, userAccessToken, cookies.session]);
 
   return (
-    <div>
+    <div> 
+      <h1>hi</h1>{/*
       {<LogoutButton/>}
       <h1>Welcome, {firstName}, to your gratitude page!</h1>
-      {/*< GetQuote /> 
+      < GetQuote /> 
       <br />
       <br />
       <div className="SuccessPage">
