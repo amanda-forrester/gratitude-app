@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
         <header className="App-header">
-          <BrowserRouter basename={frontendUrl}>
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={ <LoginPage /> } />
               <Route path={`${frontendUrl}/success`} element={ <SuccessPage />} />
