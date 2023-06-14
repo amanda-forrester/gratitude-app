@@ -98,7 +98,7 @@ function SuccessPage() {
     <div>
       {<LogoutButton/>}
       <h1>Welcome, {firstName}, to your gratitude page!</h1>
-      < GetQuote /> 
+      {/*< GetQuote /> 
       <br />
       <br />
       <div className="SuccessPage">
@@ -135,7 +135,7 @@ function SuccessPage() {
             setGratitudeItems={setGratitudeItems}
           />
         </div>
-      </div>
+       </div>*/}
     </div>
   );
 }
