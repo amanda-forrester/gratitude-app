@@ -30,7 +30,11 @@ passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: ['https://gratitude-app.onrender.com']
+  }
+));
 
 app.use(bodyParser.json());
 
