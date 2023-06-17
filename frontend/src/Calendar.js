@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import './GratitudeCalendar.css';
+const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 function GratitudeCalendar({ googleId, onDateChange }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -19,7 +20,7 @@ function GratitudeCalendar({ googleId, onDateChange }) {
       const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
       const fetchData = async () => {
         try {
-          const response = await fetch(`/gratitude/${googleId}/${formattedDate}`);
+          const response = await fetch(`${backendUrl}/gratitude/${googleId}/${formattedDate}`);
           const data = await response.json();
           setGratitudeItems(data.items);
         } catch (error) {
