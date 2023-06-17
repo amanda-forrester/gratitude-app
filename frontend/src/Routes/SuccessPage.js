@@ -85,6 +85,7 @@ function SuccessPage() {
           },
         });
         const data = await response.json();
+        console.log(data);
         setGratitudeItems(data);
       } catch (error) {
         console.error(error);
