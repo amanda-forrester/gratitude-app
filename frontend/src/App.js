@@ -11,7 +11,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={ <LoginPage /> } />
-              <Route path={`${frontendUrl}/success`} element={ <SuccessPage />} />
+              <Route path="/success" element={ <SuccessPage />} />
             </Routes>
           </BrowserRouter>
         </header>
