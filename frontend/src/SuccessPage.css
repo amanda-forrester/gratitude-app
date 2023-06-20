@@ -1,3 +1,6 @@
+.whole-page {
+  background-image: url("/gratitude-background.jpg");
+}
 
 .SuccessPage {
     display: flex;
