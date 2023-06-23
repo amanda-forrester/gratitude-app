@@ -6,7 +6,7 @@ import GratitudeCalendar from '../Calendar';
 import GetQuote from '../GetQuote';
 import moment from 'moment';
 import validator from 'validator';
-import '../SuccessPage.css';
+import '../Style/SuccessPage.css';
 import { useCookies } from 'react-cookie';
 import Cookies from 'universal-cookie';
 import LogoutButton from '../LogoutButton';
@@ -96,7 +96,7 @@ function SuccessPage() {
   }, [googleId, selectedDate, userAccessToken, cookies.session]);
 
   return (
-    <div> 
+    <div className = "whole-page"> 
       {<LogoutButton/>}
       <h1>Welcome, {firstName}, to your gratitude page!</h1>
       < GetQuote /> 

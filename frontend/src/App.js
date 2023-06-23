@@ -1,4 +1,4 @@
-import './App.css';
+import './Style/App.css';
 import LoginPage from './Routes/LoginPage';
 import SuccessPage from './Routes/SuccessPage';
 import { BrowserRouter, Routes , Route } from 'react-router-dom';

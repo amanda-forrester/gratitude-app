@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
-import './GratitudeCalendar.css';
+import './Style/GratitudeCalendar.css';
 const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 function GratitudeCalendar({ googleId, onDateChange }) {

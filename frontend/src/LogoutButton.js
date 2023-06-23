@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
-import './LogoutButton.css';
+import './Style/LogoutButton.css';
 const frontendUrl = "https://gratitude-app.onrender.com";
 
 function LogoutButton() {
