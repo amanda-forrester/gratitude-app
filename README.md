@@ -1,5 +1,5 @@
 # gratitude-app
-Gratitude app for recording, saving, and accessing gratitude lists.
+Gratitude app for recording, saving, and accessing gratitude lists. Deployed at https://gratitude-app.onrender.com
 
 ## To run
 To run the backend:
@@ -16,7 +16,7 @@ npm start
 
 ## Usage
 
-Navigate to localhost:3000 and login with your google credentials. Once logged in, you should see a text box with a prompt to record what you are grateful for. Write your items, press submit, and then you will have the option to submit another if you would like.
+The app is deployed at https://gratitude-app.onrender.com
 
 ## Tech Stack
 
