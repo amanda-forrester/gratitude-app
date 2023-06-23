@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../App.css';
+import '../Style/App.css';
 import { useSearchParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import GratitudeCalendar from '../Calendar';
