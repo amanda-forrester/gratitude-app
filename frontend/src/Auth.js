@@ -1,5 +1,5 @@
 import React from 'react';
-import "./App.css"
+import "./Style/App.css"
 const backendUrl = "https://gratitude-app-backend.onrender.com";
 
 function LoginButton() {
